@@ -7,17 +7,21 @@ function App() {
   const [score, setScore] = useState<number | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [showResults, setShowResults] = useState<boolean>(false);
+  const [showSavedAnswers, setShowSavedAnswers] = useState<boolean>(false);
+  const [savedUsers, setSavedUsers] = useState<
+    Record<string, { answers: Record<string, string>; score: number }>
+  >({});
 
   const questions: { question: string; options: string[]; correct: string }[] =
     [
       {
-        question: "¿Dónde comenzó Odres Nuevos?",
+        question: "¿Dónde comenzó el grupo?",
         options: [
           "Plaza Castilla, López de Vega con Lincoln",
-          "Hogar de tía Dorcas",
-          "Hogar de los Pastores Oller",
+          "Hogar de la tía Juanita",
+          "Hogar de los Pastores Pérez",
         ],
-        correct: "Hogar de tía Dorcas",
+        correct: "Hogar de la tía Juanita",
       },
       {
         question: "¿Cuántas personas se bautizaron en el primer bautismo?",
@@ -25,28 +29,28 @@ function App() {
         correct: "9",
       },
       {
-        question: "¿Cuál fue la primera familia en aceptar a Jesús?",
+        question: "¿Cuál fue la primera familia en aceptar el mensaje?",
         options: [
-          "Familia de Luis y Lucía",
-          "Familia de tía Dorcas",
-          "Familia de Jennifer y Julián",
+          "Familia de Juan y María",
+          "Familia de la tía Juanita",
+          "Familia de Roberto y Laura",
         ],
-        correct: "Familia de Luis y Lucía",
+        correct: "Familia de Juan y María",
       },
       {
-        question: "¿Cuántos años tiene el Pastor?",
+        question: "¿Cuántos años tiene el líder?",
         options: ["48", "50", "51"],
         correct: "50",
       },
       {
-        question: "¿Cuál es el/la miembro más joven de Odres Nuevos RD?",
-        options: ["Galia", "Jimena", "Harmonie"],
-        correct: "Harmonie",
+        question: "¿Cuál es el/la miembro más joven del grupo?",
+        options: ["Ana", "Carla", "Sofía"],
+        correct: "Sofía",
       },
       {
         question: "¿El año 2024 fue el año de ...?",
         options: [
-          "Doble porción",
+          "Doble bendición",
           "La Gracia",
           "La Gran Cosecha",
           "La Expansión",
@@ -64,8 +68,14 @@ function App() {
     }
   }, [submitted]);
 
+  useEffect(() => {
+    const storedUsers = JSON.parse(localStorage.getItem("users") || "{}");
+    setSavedUsers(storedUsers);
+  }, []);
+
   const handleNameSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setShowSavedAnswers(false);
     setSubmitted(true);
   };
 
@@ -103,12 +113,17 @@ function App() {
     const storedUsers = JSON.parse(localStorage.getItem("users") || "{}");
     storedUsers[name] = { answers, score: totalScore };
     localStorage.setItem("users", JSON.stringify(storedUsers));
+    setSavedUsers(storedUsers);
+  };
+
+  const toggleSavedAnswers = () => {
+    setShowSavedAnswers(!showSavedAnswers);
   };
 
   return (
     <div className="min-w-full p-6">
       <h1 className="text-center text-2xl font-bold">
-        <span className="text-amber-400">Odres Nuevos</span> Trivia
+        <span className="text-amber-400">Grupo de Estudio</span> Trivia
       </h1>
       {!submitted ? (
         <form onSubmit={handleNameSubmit} className="mt-4 text-center">
@@ -127,6 +142,15 @@ function App() {
             className="ml-2 rounded bg-blue-500 p-2 text-white"
           >
             Iniciar
+          </button>
+          <button
+            type="button"
+            onClick={toggleSavedAnswers}
+            className="ml-2 rounded bg-green-500 p-2 text-white"
+          >
+            {showSavedAnswers
+              ? "Ocultar Respuestas Guardadas"
+              : "Ver Respuestas Guardadas"}
           </button>
         </form>
       ) : showResults ? (
@@ -195,6 +219,48 @@ function App() {
                 : "Verificar Respuestas"}
             </button>
           </div>
+        </div>
+      )}
+
+      {showSavedAnswers && (
+        <div className="mt-4 text-center">
+          <h2 className="text-lg font-bold">Respuestas Guardadas</h2>
+          <table className="mt-4 w-full border-collapse border border-gray-500">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border border-gray-500 p-2">Usuario</th>
+                {questions.map(({ question }) => (
+                  <th key={question} className="border border-gray-500 p-2">
+                    {question}
+                  </th>
+                ))}
+                <th className="border border-gray-500 p-2">Puntuación</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(savedUsers).map(([user, data]) => (
+                <tr key={user} className="bg-white">
+                  <td className="border border-gray-500 p-2">{user}</td>
+                  {questions.map(({ question, correct }) => (
+                    <td key={question} className="border border-gray-500 p-2">
+                      <span
+                        className={
+                          data.answers[question] === correct
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }
+                      >
+                        {data.answers[question] || "-"}
+                      </span>
+                    </td>
+                  ))}
+                  <td className="border border-gray-500 p-2">
+                    {data.score} / {questions.length}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
