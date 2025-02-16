@@ -20,13 +20,13 @@ function App() {
   const questions: { question: string; options: string[]; correct: string }[] =
     [
       {
-        question: "¿Dónde comenzó el grupo?",
+        question: "¿Dónde comenzó Odres Nuevos RD?",
         options: [
           "Plaza Castilla, López de Vega con Lincoln",
-          "Hogar de la tía Juanita",
+          "Hogar de tía Dorcas",
           "Hogar de los Pastores Pérez",
         ],
-        correct: "Hogar de la tía Juanita",
+        correct: "Hogar de tía Dorcas",
       },
       {
         question: "¿Cuántas personas se bautizaron en el primer bautismo?",
@@ -34,33 +34,34 @@ function App() {
         correct: "9",
       },
       {
-        question: "¿Cuál fue la primera familia en aceptar el mensaje?",
+        question: "¿Cuál fue la primera familia en aceptar a Jesús?",
         options: [
-          "Familia de Juan y María",
-          "Familia de la tía Juanita",
-          "Familia de Roberto y Laura",
+          "Familia de Luís y Lucía",
+          "Familia de tía Dorcas",
+          "Familia de Jennifer y Julián",
         ],
-        correct: "Familia de Juan y María",
+        correct: "Familia de Luís y Lucía",
       },
       {
-        question: "¿Cuántos años tiene el líder?",
+        question: "¿Cuántos años tiene el Pastor?",
         options: ["48", "50", "51"],
         correct: "50",
       },
       {
-        question: "¿Cuál es el/la miembro más joven del grupo?",
-        options: ["Ana", "Carla", "Sofía"],
-        correct: "Sofía",
-      },
-      {
         question: "¿El año 2024 fue el año de ...?",
         options: [
-          "Doble bendición",
-          "La Gracia",
-          "La Gran Cosecha",
+          "Doble porción",
+          "El Impulso",
+          "La Plenitud",
           "La Expansión",
+          "La Gracia",
         ],
         correct: "La Expansión",
+      },
+      {
+        question: "¿Cuál es el/la miembro más joven Odres Nuevos RD?",
+        options: ["Galia", "Harmonie", "Jimena"],
+        correct: "Harmonie",
       },
     ];
 
@@ -168,9 +169,12 @@ function App() {
 
   return (
     <div className="mx-auto mb-10 flex h-screen min-h-screen max-w-7xl flex-col p-6">
-      <h1 className="text-center text-3xl font-bold text-purple-800">
-        <span className="text-amber-400">Grupo de Estudio</span> Trivia
+      <h1 className="text-center text-4xl font-bold text-purple-800">
+        ¡Trivia <span className="text-amber-400">Odres Nuevos</span>!
       </h1>
+      <h2 className="text-center text-2xl font-bold text-purple-800">
+        Edición: <span className="text-amber-400">13 Aniversario</span>
+      </h2>
 
       {!submitted ? (
         <form onSubmit={handleNameSubmit} className="mt-8 space-y-4">
