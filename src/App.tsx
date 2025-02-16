@@ -169,10 +169,10 @@ function App() {
 
   return (
     <div className="mx-auto mb-10 flex h-screen min-h-screen max-w-7xl flex-col p-6">
-      <h1 className="text-center text-4xl font-bold text-purple-800">
-        ¡Trivia <span className="text-amber-400">Odres Nuevos</span>!
+      <h1 className="text-center text-3xl font-bold text-purple-800">
+        ¡Trivia <a href="/odres-anniversary-survey" className="text-amber-400">Odres Nuevos</a>!
       </h1>
-      <h2 className="text-center text-2xl font-bold text-purple-800">
+      <h2 className="text-center text-xl font-bold text-purple-800">
         Edición: <span className="text-amber-400">13 Aniversario</span>
       </h2>
 
