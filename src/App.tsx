@@ -9,7 +9,10 @@ function App() {
   const [showResults, setShowResults] = useState<boolean>(false);
   const [showSavedAnswers, setShowSavedAnswers] = useState<boolean>(false);
   const [savedUsers, setSavedUsers] = useState<
-    Record<string, { answers: Record<string, string>; score: number }>
+    Record<
+      string,
+      { name: string; answers: Record<string, string>; score: number }
+    >
   >({});
 
   const questions: { question: string; options: string[]; correct: string }[] =
@@ -62,7 +65,8 @@ function App() {
   useEffect(() => {
     if (submitted) {
       const storedUsers = JSON.parse(localStorage.getItem("users") || "{}");
-      if (storedUsers[name]) {
+      const user = Object.values(storedUsers).find((u: any) => u.name === name);
+      if (user) {
         setSubmitted(true);
       }
     }
@@ -111,8 +115,14 @@ function App() {
     setScore(totalScore);
 
     const storedUsers = JSON.parse(localStorage.getItem("users") || "{}");
-    storedUsers[name] = { answers, score: totalScore };
+    const userIdCounter = parseInt(
+      localStorage.getItem("userIdCounter") || "0",
+    );
+    const newUserId = userIdCounter + 1;
+
+    storedUsers[newUserId] = { name, answers, score: totalScore };
     localStorage.setItem("users", JSON.stringify(storedUsers));
+    localStorage.setItem("userIdCounter", newUserId.toString());
     setSavedUsers(storedUsers);
   };
 
@@ -228,7 +238,7 @@ function App() {
           <table className="mt-4 w-full border-collapse border border-gray-500">
             <thead>
               <tr className="bg-gray-200">
-                <th className="border border-gray-500 p-2">Usuario</th>
+                <th className="border border-gray-500 p-2">Nombre</th>
                 {questions.map(({ question }) => (
                   <th key={question} className="border border-gray-500 p-2">
                     {question}
@@ -238,9 +248,9 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {Object.entries(savedUsers).map(([user, data]) => (
-                <tr key={user} className="bg-white">
-                  <td className="border border-gray-500 p-2">{user}</td>
+              {Object.entries(savedUsers).map(([userId, data]) => (
+                <tr key={userId} className="bg-white">
+                  <td className="border border-gray-500 p-2">{data.name}</td>
                   {questions.map(({ question, correct }) => (
                     <td key={question} className="border border-gray-500 p-2">
                       <span
