@@ -14,6 +14,8 @@ function App() {
       { name: string; answers: Record<string, string>; score: number }
     >
   >({});
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentUserIndex, setCurrentUserIndex] = useState<number>(0);
 
   const questions: { question: string; options: string[]; correct: string }[] =
     [
@@ -128,10 +130,27 @@ function App() {
 
   const toggleSavedAnswers = () => {
     setShowSavedAnswers(!showSavedAnswers);
+    setCurrentUserIndex(0); // Reset carousel index when toggling
+  };
+
+  const filteredUsers = Object.entries(savedUsers).filter(([_, data]) =>
+    data.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  const handleNextUser = () => {
+    if (currentUserIndex < filteredUsers.length - 1) {
+      setCurrentUserIndex(currentUserIndex + 1);
+    }
+  };
+
+  const handlePrevUser = () => {
+    if (currentUserIndex > 0) {
+      setCurrentUserIndex(currentUserIndex - 1);
+    }
   };
 
   return (
-    <div className="mx-auto flex-row h-screen min-h-screen max-w-7xl p-6">
+    <div className="mx-auto mb-10 flex h-screen min-h-screen max-w-7xl flex-col p-6">
       <h1 className="text-center text-3xl font-bold text-purple-800">
         <span className="text-amber-400">Grupo de Estudio</span> Trivia
       </h1>
@@ -247,43 +266,75 @@ function App() {
           <h2 className="text-2xl font-bold text-purple-800">
             Respuestas Guardadas
           </h2>
-          <div className="overflow-x-auto rounded-lg bg-white shadow-md">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-purple-600 text-white">
-                  <th className="p-4 text-left">Nombre</th>
-                  {questions.map(({ question }) => (
-                    <th key={question} className="p-4 text-left">
-                      {question}
-                    </th>
+          <div className="flex flex-col items-center space-y-4">
+            <input
+              type="text"
+              placeholder="Buscar por nombre..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-lg border border-gray-300 p-3 text-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+            />
+            {filteredUsers.length > 0 ? (
+              <div className="w-full rounded-lg bg-white p-6 shadow-md">
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold text-purple-800">
+                    {filteredUsers[currentUserIndex][1].name}
+                  </h3>
+                  {questions.map(({ question, correct }) => (
+                    <div key={question}>
+                      <p className="text-lg font-semibold text-gray-800">
+                        {question}
+                      </p>
+                      <p
+                        className={`text-lg ${
+                          filteredUsers[currentUserIndex][1].answers[
+                            question
+                          ] === correct
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        Respuesta:{" "}
+                        {filteredUsers[currentUserIndex][1].answers[question] ||
+                          "-"}
+                      </p>
+                    </div>
                   ))}
-                  <th className="p-4 text-left">Puntuación</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(savedUsers).map(([userId, data]) => (
-                  <tr key={userId} className="border-b border-gray-200">
-                    <td className="p-4 text-gray-800">{data.name}</td>
-                    {questions.map(({ question, correct }) => (
-                      <td key={question} className="p-4">
-                        <span
-                          className={
-                            data.answers[question] === correct
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }
-                        >
-                          {data.answers[question] || "-"}
-                        </span>
-                      </td>
-                    ))}
-                    <td className="p-4 text-gray-800">
-                      {data.score} / {questions.length}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                  <p className="text-lg font-bold text-purple-800">
+                    Puntuación: {filteredUsers[currentUserIndex][1].score} /{" "}
+                    {questions.length}
+                  </p>
+                </div>
+                <div className="mt-4 flex justify-between">
+                  <button
+                    onClick={handlePrevUser}
+                    disabled={currentUserIndex === 0}
+                    className={`rounded-lg px-6 py-3 text-lg font-semibold text-white transition-all focus:ring-2 focus:outline-none ${
+                      currentUserIndex === 0
+                        ? "cursor-not-allowed bg-gray-400"
+                        : "bg-gray-600 hover:bg-gray-700 focus:ring-gray-500"
+                    }`}
+                  >
+                    Anterior
+                  </button>
+                  <button
+                    onClick={handleNextUser}
+                    disabled={currentUserIndex === filteredUsers.length - 1}
+                    className={`rounded-lg px-6 py-3 text-lg font-semibold text-white transition-all focus:ring-2 focus:outline-none ${
+                      currentUserIndex === filteredUsers.length - 1
+                        ? "cursor-not-allowed bg-purple-400"
+                        : "bg-purple-600 hover:bg-purple-700 focus:ring-purple-500"
+                    }`}
+                  >
+                    Siguiente
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-lg text-gray-800">
+                No se encontraron resultados.
+              </p>
+            )}
           </div>
         </div>
       )}
