@@ -149,6 +149,23 @@ function App() {
     }
   };
 
+  const handleDeleteUser = () => {
+    // Get the key of the current user from the filteredUsers array
+    const userIdToDelete = filteredUsers[currentUserIndex][0];
+    if (
+      window.confirm("¿Estás seguro de que deseas eliminar esta respuesta?")
+    ) {
+      // Copy the savedUsers and remove the selected user
+      const updatedUsers = { ...savedUsers };
+      delete updatedUsers[userIdToDelete];
+      // Update localStorage and state
+      localStorage.setItem("users", JSON.stringify(updatedUsers));
+      setSavedUsers(updatedUsers);
+      // Reset the carousel index to 0 or adjust if needed
+      setCurrentUserIndex(0);
+    }
+  };
+
   return (
     <div className="mx-auto mb-10 flex h-screen min-h-screen max-w-7xl flex-col p-6">
       <h1 className="text-center text-3xl font-bold text-purple-800">
@@ -327,6 +344,14 @@ function App() {
                     }`}
                   >
                     Siguiente
+                  </button>
+                </div>
+                <div className="mt-4 flex justify-center">
+                  <button
+                    onClick={handleDeleteUser}
+                    className="rounded-lg bg-red-600 px-6 py-3 text-lg font-semibold text-white transition-all hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none"
+                  >
+                    Eliminar Respuesta
                   </button>
                 </div>
               </div>
