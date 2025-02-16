@@ -131,72 +131,81 @@ function App() {
   };
 
   return (
-    <div className="min-w-full p-6">
-      <h1 className="text-center text-2xl font-bold">
+    <div className="mx-auto flex-row h-screen min-h-screen max-w-7xl p-6">
+      <h1 className="text-center text-3xl font-bold text-purple-800">
         <span className="text-amber-400">Grupo de Estudio</span> Trivia
       </h1>
+
       {!submitted ? (
-        <form onSubmit={handleNameSubmit} className="mt-4 text-center">
-          <label>
-            Nombre:
+        <form onSubmit={handleNameSubmit} className="mt-8 space-y-4">
+          <div className="flex flex-col space-y-2">
+            <label className="text-lg font-medium text-gray-700">Nombre:</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="ml-2 rounded border p-2"
+              className="rounded-lg border border-gray-300 p-3 text-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
               required
             />
-          </label>
-          <button
-            type="submit"
-            className="ml-2 rounded bg-blue-500 p-2 text-white"
-          >
-            Iniciar
-          </button>
-          <button
-            type="button"
-            onClick={toggleSavedAnswers}
-            className="ml-2 rounded bg-green-500 p-2 text-white"
-          >
-            {showSavedAnswers
-              ? "Ocultar Respuestas Guardadas"
-              : "Ver Respuestas Guardadas"}
-          </button>
+          </div>
+          <div className="flex flex-col space-y-4">
+            <button
+              type="submit"
+              className="rounded-lg bg-purple-600 py-3 text-lg font-semibold text-white transition-all hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+            >
+              Iniciar
+            </button>
+            <button
+              type="button"
+              onClick={toggleSavedAnswers}
+              className="rounded-lg bg-green-600 py-3 text-lg font-semibold text-white transition-all hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
+            >
+              {showSavedAnswers
+                ? "Ocultar Respuestas Guardadas"
+                : "Ver Respuestas Guardadas"}
+            </button>
+          </div>
         </form>
       ) : showResults ? (
-        <div className="mt-4 text-center">
-          <h2 className="text-lg font-bold">Resultados</h2>
-          {questions.map(({ question, correct }) => (
-            <p key={question} className="mt-2">
-              <strong>{question}</strong> <br />
-              <span
-                className={
-                  answers[question] === correct
-                    ? "text-green-500"
-                    : "text-red-500"
-                }
-              >
-                Tu respuesta: {answers[question]}
-              </span>{" "}
-              <br />
-              <span className="text-blue-500">
-                Respuesta correcta: {correct}
-              </span>
-            </p>
-          ))}
-          <p className="mt-4 text-lg font-bold">
+        <div className="mt-8 space-y-6">
+          <h2 className="text-2xl font-bold text-purple-800">Resultados</h2>
+          <div className="space-y-4">
+            {questions.map(({ question, correct }) => (
+              <div key={question} className="rounded-lg bg-white p-4 shadow-md">
+                <p className="text-lg font-semibold text-gray-800">
+                  {question}
+                </p>
+                <p
+                  className={`mt-2 text-lg ${
+                    answers[question] === correct
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  Tu respuesta: {answers[question]}
+                </p>
+                <p className="mt-2 text-lg text-blue-600">
+                  Respuesta correcta: {correct}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="text-xl font-bold text-purple-800">
             Puntuación: {score} / {questions.length}
           </p>
         </div>
       ) : (
-        <div className="mt-4 text-center">
-          <h2 className="text-lg font-bold">
-            {questions[currentQuestion].question}
-          </h2>
-          <ul className="mt-4">
-            {questions[currentQuestion].options.map((option) => (
-              <li key={option}>
-                <label>
+        <div className="mt-8 space-y-6">
+          <div className="rounded-lg bg-white p-6 shadow-md">
+            <h2 className="text-2xl font-bold text-purple-800">
+              {questions[currentQuestion].question}
+            </h2>
+            <div className="mt-4 space-y-4">
+              {questions[currentQuestion].options.map((option) => (
+                <label
+                  key={option}
+                  className="flex items-center space-x-3 rounded-lg border border-gray-300 p-4 transition-all hover:bg-gray-50"
+                >
                   <input
                     type="radio"
                     name="answer"
@@ -205,24 +214,25 @@ function App() {
                     checked={
                       answers[questions[currentQuestion].question] === option
                     }
-                  />{" "}
-                  {option}
+                    className="h-5 w-5 accent-purple-600"
+                  />
+                  <span className="text-lg text-gray-800">{option}</span>
                 </label>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-4">
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-between">
             {currentQuestion > 0 && (
               <button
                 onClick={prevQuestion}
-                className="mr-2 rounded bg-gray-500 p-2 text-white"
+                className="rounded-lg bg-gray-600 px-6 py-3 text-lg font-semibold text-white transition-all hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:outline-none"
               >
                 Anterior
               </button>
             )}
             <button
               onClick={nextQuestion}
-              className="rounded bg-blue-500 p-2 text-white"
+              className="rounded-lg bg-purple-600 px-6 py-3 text-lg font-semibold text-white transition-all hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:outline-none"
             >
               {currentQuestion < questions.length - 1
                 ? "Siguiente"
@@ -233,44 +243,48 @@ function App() {
       )}
 
       {showSavedAnswers && (
-        <div className="mt-4 text-center">
-          <h2 className="text-lg font-bold">Respuestas Guardadas</h2>
-          <table className="mt-4 w-full border-collapse border border-gray-500">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border border-gray-500 p-2">Nombre</th>
-                {questions.map(({ question }) => (
-                  <th key={question} className="border border-gray-500 p-2">
-                    {question}
-                  </th>
-                ))}
-                <th className="border border-gray-500 p-2">Puntuación</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(savedUsers).map(([userId, data]) => (
-                <tr key={userId} className="bg-white">
-                  <td className="border border-gray-500 p-2">{data.name}</td>
-                  {questions.map(({ question, correct }) => (
-                    <td key={question} className="border border-gray-500 p-2">
-                      <span
-                        className={
-                          data.answers[question] === correct
-                            ? "text-green-500"
-                            : "text-red-500"
-                        }
-                      >
-                        {data.answers[question] || "-"}
-                      </span>
-                    </td>
+        <div className="mt-8 space-y-6">
+          <h2 className="text-2xl font-bold text-purple-800">
+            Respuestas Guardadas
+          </h2>
+          <div className="overflow-x-auto rounded-lg bg-white shadow-md">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-purple-600 text-white">
+                  <th className="p-4 text-left">Nombre</th>
+                  {questions.map(({ question }) => (
+                    <th key={question} className="p-4 text-left">
+                      {question}
+                    </th>
                   ))}
-                  <td className="border border-gray-500 p-2">
-                    {data.score} / {questions.length}
-                  </td>
+                  <th className="p-4 text-left">Puntuación</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {Object.entries(savedUsers).map(([userId, data]) => (
+                  <tr key={userId} className="border-b border-gray-200">
+                    <td className="p-4 text-gray-800">{data.name}</td>
+                    {questions.map(({ question, correct }) => (
+                      <td key={question} className="p-4">
+                        <span
+                          className={
+                            data.answers[question] === correct
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }
+                        >
+                          {data.answers[question] || "-"}
+                        </span>
+                      </td>
+                    ))}
+                    <td className="p-4 text-gray-800">
+                      {data.score} / {questions.length}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
